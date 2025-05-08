@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Bot Test UI</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #controls button { padding: 10px 15px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        #startButton { background-color: #28a745; color: white; }
+        #stopButton { background-color: #dc3545; color: white; }
+        #status { margin-top: 15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; }
+        .log-area { margin-top: 15px; padding: 10px; height: 200px; overflow-y: auto; border: 1px solid #ccc; background-color: #f8f9fa; border-radius: 5px; }
+        .log-area p { margin: 5px 0; font-size: 0.9em; }
+        .log-area .error { color: red; }
+        .log-area .info { color: blue; }
+        .log-area .transcript-final { font-weight: bold; }
+        .log-area .llm-response { color: purple; }
+        #botState { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Bot Test Interface</h1>
+
+        <div id="controls">
+            <button id="connectButton">Connect WebSocket</button>
+            <button id="startButton" disabled>Start Listening</button>
+            <button id="stopButton" disabled>Stop Listening</button>
+        </div>
+
+        <div id="status">
+            WebSocket: <span id="wsStatus">Disconnected</span><br>
+            Bot State: <span id="botState">IDLE</span><br>
+            Mic Permission: <span id="micPermission">Not Granted</span>
+        </div>
+
+        <div class="log-area" id="transcriptArea">
+            <p><em>Transcripts will appear here...</em></p>
+        </div>
+        <div class="log-area" id="llmResponseArea">
+            <p><em>LLM responses will appear here...</em></p>
+        </div>
+        <div class="log-area" id="generalLogArea">
+            <p><em>General logs and errors...</em></p>
+        </div>
+        
+        <audio id="audioPlayer" style="display: none;"></audio>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
