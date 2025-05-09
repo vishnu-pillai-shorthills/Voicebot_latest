@@ -15,7 +15,7 @@ load_dotenv()
 
 DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
-from app.types import Event, EventType
+from ..types import Event, EventType
 
 
 class DeepgramService:
@@ -86,7 +86,7 @@ class DeepgramService:
 
     async def _on_message(self, dg_client_instance, result, **kwargs):
         # 'result' is the LiveTranscriptionResponse
-        from app.state_machine import VoiceBotState
+        from ..state_machine import VoiceBotState
 
         if not (result and hasattr(result, 'channel') and
                 hasattr(result.channel, 'alternatives') and

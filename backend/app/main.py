@@ -6,10 +6,10 @@ from fastapi.responses import HTMLResponse
 import os
 from dotenv import load_dotenv
 
-from app.state_machine import VoiceBotState
-from app.services.deepgram_service import DeepgramService
-from app.services.llm_service import LLMService
-from app.services.tts_service import TTSService
+from .state_machine import VoiceBotState
+from .services.deepgram_service import DeepgramService
+from .services.llm_service import LLMService
+from .services.tts_service import TTSService
 from datetime import datetime
 
 
@@ -23,7 +23,7 @@ FRONTEND_DIR = os.path.join(BASE_DIR, "..", "..", "frontend") # Adjust path if n
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 
-from app.types import Event, EventType
+from .types import Event, EventType
 import uuid
 
 # --- In-memory session management (for simplicity) ---
@@ -145,25 +145,74 @@ class SessionManager:
 
  # Single global session for this example
 
+# @app.on_event("startup")
+# async def startup_event():
+#     # You can initialize models or connections here if needed globally
+#     # For instance, pre-loading LLM model if Ollama supports it or warming up Polly.
+#     print("Voice Bot API starting up...")
+#     # Check if Ollama is running (simple check)
+#     try:
+#         await session.llm_service.client.list() # any simple command
+#         print("Ollama connection successful.")
+#     except Exception as e:
+#         print(f"Could not connect to Ollama on startup: {e}. Please ensure Ollama is running.")
+#         # You might want to prevent startup or have a degraded mode
+    
+#     # Check AWS Polly credentials (simple check)
+#     try:
+#         session.tts_service.polly_client.describe_voices(LanguageCode="en-US")
+#         print("AWS Polly connection successful.")
+#     except Exception as e:
+#         print(f"Could not connect to AWS Polly on startup: {e}. Check credentials and region.")
+
+# @app.on_event("startup")
+# async def startup_event():
+#     print("Voice Bot API starting up...")
+ 
+#     # Check Azure OpenAI connection
+#     try:
+#         llm = LLMService()
+#         # Simple test call to verify Azure OpenAI connectivity
+#         test_messages = [{"role": "user", "content": "Hello"}]
+#         async for _ in llm.get_response_stream(test_messages):
+#             print("Azure OpenAI connection successful.")
+#             break  # Only check for the first streamed response
+#     except Exception as e:
+#         print(f"Could not connect to Azure OpenAI on startup: {e}. Please check your credentials and endpoint.")
+#         # Optionally, halt startup or run in degraded mode
+ 
+#     # Check AWS Polly credentials (simple check)
+#     try:
+#         tts = TTSService()
+#         tts.polly_client.describe_voices(LanguageCode="en-US")
+#         print("AWS Polly connection successful.")
+#     except Exception as e:
+#         print(f"Could not connect to AWS Polly on startup: {e}. Check credentials and region.")
+ 
 @app.on_event("startup")
 async def startup_event():
-    # You can initialize models or connections here if needed globally
-    # For instance, pre-loading LLM model if Ollama supports it or warming up Polly.
     print("Voice Bot API starting up...")
-    # Check if Ollama is running (simple check)
+ 
+    # Check Azure OpenAI connection
     try:
-        await session.llm_service.client.list() # any simple command
-        print("Ollama connection successful.")
+        llm = LLMService()
+        # Simple test call to verify Azure OpenAI connectivity
+        test_messages = [{"role": "user", "content": "Hello"}]
+        async for _ in llm.get_response_stream(test_messages):
+            print("Azure OpenAI connection successful.")
+            break  # Only check for the first streamed response
     except Exception as e:
-        print(f"Could not connect to Ollama on startup: {e}. Please ensure Ollama is running.")
-        # You might want to prevent startup or have a degraded mode
-    
+        print(f"Could not connect to Azure OpenAI on startup: {e}. Please check your credentials and endpoint.")
+        # Optionally, halt startup or run in degraded mode
+ 
     # Check AWS Polly credentials (simple check)
     try:
-        session.tts_service.polly_client.describe_voices(LanguageCode="en-US")
+        tts = TTSService()
+        tts.polly_client.describe_voices(LanguageCode="en-US")
         print("AWS Polly connection successful.")
     except Exception as e:
         print(f"Could not connect to AWS Polly on startup: {e}. Check credentials and region.")
+ 
 
 @app.get("/", response_class=HTMLResponse)
 async def get_root():
